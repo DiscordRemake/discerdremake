@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -65,40 +64,40 @@
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
-    <script src="script.js"></script> <!-- Link to the JavaScript file -->
+
     <script>
+        // Load saved messages when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedMessages = JSON.parse(localStorage.getItem('messages')) || [];
+            const messagesDiv = document.getElementById('messages');
+            
+            savedMessages.forEach(message => {
+                messagesDiv.innerHTML += `<div>${message}</div>`;
+            });
+            
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
+        });
+
         function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (message) {
-                saveMessage(message);
-                input.value = '';
-                displayMessage(message);
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+
+            if (message.trim() !== "") {
+                const messagesDiv = document.getElementById('messages');
+                const savedMessages = JSON.parse(localStorage.getItem('messages')) || [];
+                
+                // Add new message to the messages div
+                messagesDiv.innerHTML += `<div>${message}</div>`;
+                
+                // Save the new message in localStorage
+                savedMessages.push(message);
+                localStorage.setItem('messages', JSON.stringify(savedMessages));
+                
+                // Clear the input field and auto-scroll
+                messageInput.value = '';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
             }
         }
-
-        function displayMessage(message) {
-            const messagesContainer = document.getElementById('messages');
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesContainer.appendChild(messageElement);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
-        }
-
-        function saveMessage(message) {
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.push(message);
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-        }
-
-        function loadMessages() {
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.forEach(msg => {
-                displayMessage(msg);
-            });
-        }
-
-        window.addEventListener('load', loadMessages);
     </script>
 </body>
 </html>
