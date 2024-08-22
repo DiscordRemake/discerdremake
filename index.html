@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,20 +20,26 @@
             padding: 20px;
             background-color: #5b5151;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 300px; /* Adjusted height to accommodate the input and button */
         }
 
         #messages {
-            height: 150px;
+            flex: 1;
             overflow-y: auto;
             margin-bottom: 10px;
             border: 1px solid #000;
             padding: 5px;
             background-color: #900000;
+            text-align: left; /* Align messages to the left */
         }
 
         #messageInput {
             width: calc(100% - 60px);
             padding: 5px;
+            margin-right: 10px; /* Margin to separate from the button */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         button {
@@ -53,9 +60,45 @@
     <h1>Welcome to My Chatroom</h1>
     <div id="chatroom">
         <div id="messages"></div>
-        <input type="text" id="messageInput" placeholder="Type a message...">
-        <button onclick="sendMessage()">Send</button>
+        <div style="display: flex; align-items: center;">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
     <script src="script.js"></script> <!-- Link to the JavaScript file -->
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (message) {
+                saveMessage(message);
+                input.value = '';
+                displayMessage(message);
+            }
+        }
+
+        function displayMessage(message) {
+            const messagesContainer = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
+        }
+
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(msg => {
+                displayMessage(msg);
+            });
+        }
+
+        window.addEventListener('load', loadMessages);
+    </script>
 </body>
 </html>
